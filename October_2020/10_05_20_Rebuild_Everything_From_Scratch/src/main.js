@@ -1,7 +1,8 @@
 import Text from "./lib/Text";
 import Game from "./lib/Game";
-import Sprite from "./lib/Sprite";
-import TileSprite from "./lib/TileSprite";
+import Level from "./entites/Level";
+import KeyboardControls from "./lib/KeyboardControls";
+import Squizz from "./entites/Squizz";
 
 const width = 640;
 const height = 480;
@@ -19,17 +20,9 @@ const hello = new Text({
   },
 });
 
-const sprite = new Sprite({
-  textureUrl: "./resources/spaceship.png",
-  spawnPosition: { x: 100, y: 100 },
-});
-
-const tileSprite = new TileSprite({
-  textureUrl: "./resources/player-walk.png",
-  spanwPosition: { x: 200, y: 200 },
-  tileWidth: 32,
-  tileHeight: 32,
-  frame: { x: 0, y: 1 },
+const level = new Level({
+  width,
+  height,
 });
 
 const myGame = new Game({
@@ -38,7 +31,15 @@ const myGame = new Game({
   parantElementIdentifier: "#board",
 });
 
+const squizz = new Squizz({
+  spawnPosition: {
+    x: 200,
+    y: 200,
+  },
+  controls: new KeyboardControls(),
+});
+
+myGame.add(level);
+myGame.add(squizz);
 myGame.add(hello);
-myGame.add(sprite);
-myGame.add(tileSprite);
 myGame.run();
