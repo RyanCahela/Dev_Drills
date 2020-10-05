@@ -50,6 +50,23 @@ class CanvasRenderer {
           ctx.fillText(node.text, 0, 0);
         }
 
+        if (node.texture && node.tileWidth && node.tileHeight && node.frame) {
+          const { texture, tileWidth, tileHeight, frame } = node;
+          ctx.drawImage(
+            texture.image,
+            frame.x * tileWidth,
+            frame.y * tileHeight,
+            tileWidth,
+            tileHeight,
+            0,
+            0,
+            tileWidth,
+            tileHeight
+          );
+        } else if (node.texture) {
+          ctx.drawImage(node.texture.image, 0, 0);
+        }
+
         if (node.nodes) {
           renderRecursive(node);
         }
