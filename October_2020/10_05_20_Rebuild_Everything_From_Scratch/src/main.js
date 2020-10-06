@@ -3,6 +3,7 @@ import Game from "./lib/Game";
 import Level from "./entites/Level";
 import KeyboardControls from "./lib/KeyboardControls";
 import Squizz from "./entites/Squizz";
+import Camera from "./lib/Camera";
 
 const width = 640;
 const height = 480;
@@ -20,10 +21,12 @@ const hello = new Text({
   },
 });
 
-const level = new Level({
-  width,
-  height,
-});
+const worldSize = {
+  width: width * 2,
+  height: height * 2,
+};
+
+const level = new Level(worldSize);
 
 const myGame = new Game({
   width,
@@ -39,7 +42,19 @@ const squizz = new Squizz({
   controls: new KeyboardControls(),
 });
 
-myGame.add(level);
-myGame.add(squizz);
+const camera = new Camera({
+  subject: squizz,
+  viewport: {
+    width,
+    height,
+  },
+  worldSize,
+});
+
+camera.add(level);
+camera.add(squizz);
+myGame.add(camera);
 myGame.add(hello);
-myGame.run();
+myGame.run(() => {
+  level.checkGround(squizz.position);
+});

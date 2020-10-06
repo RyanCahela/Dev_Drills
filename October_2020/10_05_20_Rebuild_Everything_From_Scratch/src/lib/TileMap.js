@@ -25,6 +25,40 @@ class TileMap extends Container {
         },
       });
     });
+
+    this.tileWidth = tileWidth;
+    this.tileHeight = tileHeight;
+    this.mapWidth = mapWidth;
+    this.mapHeight = mapHeight;
+  }
+
+  convertPixlePositionToGridPosition(pixelPosition) {
+    return {
+      x: Math.floor(pixelPosition.x / this.tileWidth),
+      y: Math.floor(pixelPosition.y / this.tileHeight),
+    };
+  }
+
+  convertGridPositionToPixlePosition(gridPosition) {
+    return {
+      x: gridPosition.x * this.tileWidth,
+      y: gridPosition.y * this.tileHeight,
+    };
+  }
+
+  getTileByGridPosition(gridPosition) {
+    return this.nodes[gridPosition.y * this.mapWidth + gridPosition.x];
+  }
+
+  getTileByPixlePosition(pixlePosition) {
+    return this.getTileByGridPosition(
+      this.convertPixlePositionToGridPosition(pixlePosition)
+    );
+  }
+
+  setTileFrameByPixlePosition(pixlePosition, newFrame) {
+    const tile = this.getTileByPixlePosition(pixlePosition);
+    tile.frame = newFrame;
   }
 }
 

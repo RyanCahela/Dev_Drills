@@ -24,6 +24,26 @@ class Level extends TileMap {
       tileWidth: tileSize,
       tileHeight: tileSize,
     });
+
+    this.lastTile = null;
+    this.spaceTileFrame = { x: 0, y: 0 };
+  }
+
+  checkGround(playerPixelPosition) {
+    const currentTile = this.getTileByPixlePosition(playerPixelPosition);
+    if (currentTile === this.lastTile) {
+      return "same tile";
+    }
+
+    if (currentTile !== this.lastTile) {
+      this.setTileFrameByPixlePosition(playerPixelPosition, this.spaceTile);
+      this.lastTile = currentTile;
+      return "changed";
+    }
+
+    if (currentTile === this.spaceTileFrame) {
+      return "cleared";
+    }
   }
 }
 
