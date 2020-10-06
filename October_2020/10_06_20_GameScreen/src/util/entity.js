@@ -13,4 +13,9 @@ const distance = (entity1, entity2) => {
   return mathDistance(centerPosition(entity1), centerPosition(entity2));
 };
 
-export { distance, centerPosition };
+const entityMath = {
+  centerPosition,
+  distance,
+};
+
+export default entityMath;

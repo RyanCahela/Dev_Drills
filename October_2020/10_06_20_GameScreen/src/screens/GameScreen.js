@@ -4,6 +4,8 @@ import Text from "../lib/Text";
 import Level from "../entites/Level";
 import Squizz from "../entites/Squizz";
 import Enemy from "../entites/Enemy";
+import entityMath from "../util/entity";
+import { clamp } from "../util/math";
 
 class GameScreen extends Container {
   constructor(config = {}) {
@@ -92,10 +94,35 @@ class GameScreen extends Container {
     });
   }
 
+  checkForCollisions() {
+    //keep squizz in bounds
+    const {
+      bounds: { top, bottom, left, right },
+    } = this.level;
+    this.squizz.position.x = clamp(this.squizz.position.x, left, right);
+    this.squizz.position.y = clamp(this.squizz.position.y, top, bottom);
+
+    //check for collision with enemy
+    this.enemies.map((enemy) => {
+      if (entityMath.distance(this.squizz, enemy) < 32) {
+        this.squizz.isDead = true;
+        enemy.isDead = true;
+      }
+    });
+
+    //check for collision with own trail
+    const ground = this.level.checkGround(
+      entityMath.centerPosition(this.squizz)
+    );
+    if (ground === "cleared") {
+      this.squizz.isDead = true;
+    }
+  }
+
   update(deltaTime, currentTime) {
     super.update(deltaTime, currentTime);
     this.updateEnemies(deltaTime, currentTime);
-    this.level.checkGround(this.squizz.position);
+    this.checkForCollisions();
   }
 }
 

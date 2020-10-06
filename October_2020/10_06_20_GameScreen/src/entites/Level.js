@@ -28,6 +28,12 @@ class Level extends TileMap {
     this.height = height;
     this.lastTile = null;
     this.spaceTileFrame = { x: 0, y: 0 };
+    this.bounds = {
+      top: tileSize,
+      left: tileSize,
+      right: width - tileSize * 2,
+      bottom: height - tileSize * 2,
+    };
   }
 
   checkGround(playerPixelPosition) {
