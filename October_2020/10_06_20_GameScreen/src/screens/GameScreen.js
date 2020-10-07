@@ -1,6 +1,5 @@
 import Container from "../lib/Container";
 import Camera from "../lib/Camera";
-import Text from "../lib/Text";
 import Level from "../entites/Level";
 import Squizz from "../entites/Squizz";
 import Enemy from "../entites/Enemy";
@@ -10,19 +9,20 @@ import { clamp } from "../util/math";
 class GameScreen extends Container {
   constructor(config = {}) {
     super();
-    const { game, controls } = config;
-    this.width = game.width;
-    this.height = game.height;
+    const {
+      game: { width, height },
+      controls,
+      transitionFunction,
+    } = config;
     const worldSize = {
-      width: this.width * 2,
-      height: this.height * 2,
+      width: width * 2,
+      height: height * 2,
     };
     const level = new Level(worldSize);
-
     const squizz = new Squizz({
       spawnPosition: {
-        x: this.width / 2,
-        y: this.height / 2,
+        x: width / 2,
+        y: height / 2,
       },
       controls,
     });
@@ -30,18 +30,16 @@ class GameScreen extends Container {
     const camera = new Camera({
       subject: squizz,
       viewport: {
-        width: this.width,
-        height: this.height,
+        width: width,
+        height: height,
       },
       worldSize,
     });
 
     const enemies = this.addEnemies(level);
-
     camera.add(level);
     camera.add(squizz);
     camera.add(enemies);
-
     this.add(camera);
 
     this.worldSize = worldSize;
@@ -49,6 +47,14 @@ class GameScreen extends Container {
     this.enemies = enemies;
     this.squizz = squizz;
     this.camera = camera;
+    this.stats = {
+      pellets: 0,
+      maxPellets: level.totalFreeSpots,
+      lives: 3,
+      score: 0,
+    };
+    this.isGameOver = false;
+    this.onGameOver = transitionFunction;
   }
 
   addEnemies(level) {
@@ -107,6 +113,7 @@ class GameScreen extends Container {
       if (entityMath.distance(this.squizz, enemy) < 32) {
         this.squizz.isDead = true;
         enemy.isDead = true;
+        this.isGameOver = true;
       }
     });
 
@@ -116,6 +123,7 @@ class GameScreen extends Container {
     );
     if (ground === "cleared") {
       this.squizz.isDead = true;
+      this.isGameOver = true;
     }
   }
 
@@ -123,6 +131,9 @@ class GameScreen extends Container {
     super.update(deltaTime, currentTime);
     this.updateEnemies(deltaTime, currentTime);
     this.checkForCollisions();
+    if (this.isGameOver) {
+      this.onGameOver(this.stats);
+    }
   }
 }
 

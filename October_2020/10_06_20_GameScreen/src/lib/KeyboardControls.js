@@ -10,7 +10,7 @@ class KeyboardControls {
       wKey: 87,
       dKey: 68,
       sKey: 83,
-      spacebar: 33,
+      spacebar: 32,
     };
 
     document.addEventListener("keydown", (e) => this.handleKeydown(e), false);
@@ -28,6 +28,10 @@ class KeyboardControls {
 
   handleKeyup(e) {
     this.keys[e.which] = false;
+  }
+
+  reset() {
+    this.keys = {};
   }
 
   get x() {
@@ -59,7 +63,7 @@ class KeyboardControls {
   }
 
   get action() {
-    return this.keys[this.keysCodes.spacebar];
+    return this.keys[this.keyCodes.spacebar];
   }
 }
 
