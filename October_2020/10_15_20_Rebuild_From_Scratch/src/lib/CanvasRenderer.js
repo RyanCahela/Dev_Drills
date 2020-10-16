@@ -6,6 +6,7 @@ class CanvasRenderer {
     this.height = canvas.height = height;
     this.view = canvas;
     this.ctx = canvas.getContext("2d");
+    this.ctx.textBaseline = "top";
   }
 
   render(container, clear = true) {
@@ -48,9 +49,9 @@ class CanvasRenderer {
           ctx.fillText(node.text, 0, 0);
         }
 
-        if (node.texture && node.tileWidth && node.tileHeight && node.frame) {
+        if (node.image && node.tileWidth && node.tileHeight && node.frame) {
           ctx.drawImage(
-            node.texture.image,
+            node.image,
             node.tileWidth * node.frame.x,
             node.tileHeight * node.frame.y,
             node.tileWidth,
@@ -60,8 +61,8 @@ class CanvasRenderer {
             node.tileWidth,
             node.tileHeight
           );
-        } else if (node.texture) {
-          ctx.drawImage(node.texture.image, 0, 0);
+        } else if (node.image) {
+          ctx.drawImage(node.image, 0, 0);
         }
 
         if (node.nodes) {

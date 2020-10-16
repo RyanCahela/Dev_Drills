@@ -1,5 +1,7 @@
 import Game from "./lib/Game";
-import Text from "./lib/Text";
+import TitleScreen from "./screens/TitleScreen";
+import KeyboardControls from "./lib/KeyboardControls";
+import GameScreen from "./screens/GameScreen";
 
 const myGame = new Game({
   width: 640,
@@ -7,19 +9,23 @@ const myGame = new Game({
   parentContainerId: "board",
 });
 
-myGame.add(
-  new Text({
-    text: "Hello World",
-    styles: {
-      fill: "darkviolet",
-      font: "20pt sans-serif",
-      align: "center",
-    },
-    spawnPosition: {
-      x: 320,
-      y: 240,
-    },
-  })
-);
+const controls = new KeyboardControls();
 
+function loadGameScreen() {
+  myGame.scene = new GameScreen({
+    game: myGame,
+    controls,
+    nextScreenFunction: loadTitleScreen,
+  });
+}
+
+function loadTitleScreen() {
+  myGame.scene = new TitleScreen({
+    game: myGame,
+    controls,
+    nextScreenFunction: loadGameScreen,
+  });
+}
+
+loadTitleScreen();
 myGame.run();

@@ -4,6 +4,8 @@ import Container from "./Container";
 class Game {
   constructor(config = {}) {
     const { width, height, parentContainerId } = config;
+    this.width = width;
+    this.height = height;
     this.scene = new Container();
     this.renderer = new CanvaRenderer({ width, height });
     document.getElementById(parentContainerId).appendChild(this.renderer.view);
