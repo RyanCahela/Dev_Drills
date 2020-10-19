@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        background-color: lightgrey;
+      }
+    </style>
+    <title>Tennis Game</title>
+  </head>
+  <body>
+    <canvas id="board" width="640px" height="480px"></canvas>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const board = document.getElementById("board");
+        const ctx = board.getContext("2d");
+        const ball = {
+          position: { x: 100, y: 100 },
+          direction: { x: 1, y: 1 },
+          anchor: { x: -16, y: -16 },
+          width: 32,
+          height: 32,
+          speed: 300,
+        };
+
+        const background = {
+          position: { x: 0, y: 0 },
+          width: board.width,
+          height: board.height,
+          color: "#212121",
+        };
+
+        let deltaTime = 0;
+        let timeOfLastFrame = 0;
+        const draw = () => {
+          ctx.clearRect(0, 0, 640, 480);
+          drawRect(background);
+          drawCircle(ball);
+        };
+
+        const loop = (ms) => {
+          requestAnimationFrame(loop);
+          const currentTime = ms / 1000;
+          deltaTime = currentTime - timeOfLastFrame;
+          timeOfLastFrame = currentTime;
+
+          if (
+            ball.position.x > board.width + ball.anchor.x ||
+            ball.position.x < 0 - ball.anchor.x
+          ) {
+            ball.direction.x = -ball.direction.x;
+          }
+
+          if (
+            ball.position.y > board.height + ball.anchor.y ||
+            ball.position.y < 0 - ball.anchor.y
+          ) {
+            ball.direction.y = -ball.direction.y;
+          }
+
+          ball.position.x += ball.direction.x * ball.speed * deltaTime;
+          ball.position.y += ball.direction.y * ball.speed * deltaTime;
+
+          draw();
+        };
+
+        function drawCircle(entity) {
+          entityColor = {
+            r: (Math.abs(entity.position.x - board.width) / board.width) * 255,
+            g: 0,
+            b: (entity.position.x / board.width) * 255,
+            a: 0.5,
+          };
+
+          const { r, g, b, a } = entityColor;
+          // let gradient = ctx.createLinearGradient(0, 0, 640, 0);
+          // gradient.addColorStop(0, "blue");
+          // gradient.addColorStop(1, "red");
+
+          ctx.beginPath();
+          ctx.shadowColor = `rgba(${r}, ${g}, ${b}, ${a})`;
+          ctx.shadowBlur = 20;
+          ctx.strokeStyle = `rgb(${r}, ${g}, ${b})`;
+          ctx.lineWidth = 10;
+          ctx.arc(
+            entity.position.x,
+            entity.position.y,
+            entity.width / 2,
+            0,
+            Math.PI * 2
+          );
+          ctx.closePath();
+          ctx.stroke();
+        }
+
+        function drawRect(entity) {
+          ctx.fillStyle = entity.color;
+          ctx.fillRect(
+            entity.position.x,
+            entity.position.y,
+            entity.width,
+            entity.height
+          );
+        }
+        requestAnimationFrame(loop);
+      });
+    </script>
+  </body>
+</html>
